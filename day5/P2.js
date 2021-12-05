@@ -2,6 +2,9 @@ const path = require('path');
 const fs = require('fs');
 
 const getCoords = (stringInput) => {
+    // 7,0 -> 6,4 becomes: x1 = 7, y1 = 0, x2 = 6, y2 = 4
+    // returns [] if diagonal
+    // returns array of coords as [[x, y], [x, y], etc...]
     let [c1, c2] = stringInput.split("->");
     let [x1, y1] = getxy(c1);
     let [x2, y2] = getxy(c2);
@@ -35,20 +38,44 @@ const getCoords = (stringInput) => {
 }
 
 const getxy = (stringCoord) => {
+    // returns int[] [x, y] from "x,y"
     return stringCoord.split(',').map(e=>parseInt(e))
 }
 
 const flattenLevel = (flattened, nested) => {
+    // used by reduce to convert [[], [[1,2], [2,3]]] to [[1,2], [2,3]]
     return [...flattened, ...nested];
 }
 
-const input = fs.readFileSync(path.join(__dirname, 'input.txt'), 'utf8')
-	.toString()
-	.trim()
-	.split('\n')
+const getDataFromFile = (filename) => {
+    return fs.readFileSync(
+        path.join(__dirname, filename),
+        'utf8'
+    ).toString()
+    .trim()
+    .split('\n')
     .map(getCoords)
     .reduce(flattenLevel);
+}
+const testInput = getDataFromFile('testinput.txt');
+const input = getDataFromFile('input.txt');
 
-module.exports = {
-	input: input
-};
+const getDupesCount = (allCoordinates) => {
+    countObj = {};
+    countDupes = 0;
+    for (coord of allCoordinates) {
+        if (!countObj[coord]) {
+            countObj[coord] = 1;
+        } else {
+            if (countObj[coord] == 1) {
+                countDupes++;
+            }
+            countObj[coord] += 1;
+        }
+    }
+    return countDupes;
+}
+
+console.log("expected test data result: 12");
+console.log("test data result: " + getDupesCount(testInput));
+console.log("challenge input result: "+ getDupesCount(input));
