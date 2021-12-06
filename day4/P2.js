@@ -13,7 +13,6 @@ const winningCombos = [
     [3,8,13,18,23],
     [4,9,14,19,24]
 ];
-
 const getDataFromFile = (filename) => {
     // on Windows machine, \r
     let allData = fs.readFileSync(
@@ -48,15 +47,25 @@ const getDataFromFile = (filename) => {
     return [calls, boards];
 }
 const markBoards = (calls, boards) => {
+    let score;
+    let winners = [];
     for (let call of calls) {
-        for (let board of boards) {
-            let valIdx = board.findIndex((i) => i === call);
+        for (let bi = 0; bi< boards.length; bi++) {
+            if (winners.findIndex( (w) => w === bi) > -1) { 
+                continue;
+            }
+
+            let valIdx = boards[bi].findIndex((i) => i === call);
             if (valIdx != -1) {
                 //it was found
-                board[valIdx] = 'x';
-                let hasWon = checkForWinner(board);
+                boards[bi][valIdx] = 'x';
+                let hasWon = checkForWinner(boards[bi]);
                 if (hasWon) {
-                    return scoreBoard(board)*call;
+                    score = scoreBoard(boards[bi])*call;
+                    winners = [...winners, bi];
+                    if (winners.length === boards.length) {
+                        return score;
+                    }
                 }
             }
         }
@@ -88,7 +97,11 @@ const scoreBoard = (board) => {
     }, initialValue);
 }
 
+const [testCalls, testBoards] = getDataFromFile('testInput.txt');
+const testScore = markBoards(testCalls, testBoards);
+console.log("testInput expected: 1924, actual: "+ testScore);
+
+
 const [calls, boards] = getDataFromFile('input.txt');
 const score = markBoards(calls, boards);
-console.log(score);
-
+console.log("Challenge result: " + score);
