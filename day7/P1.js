@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-const { get } = require('http');
 
 const getDataFromFile = (filename) => {
     return fs.readFileSync(
