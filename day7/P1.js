@@ -23,4 +23,4 @@ let testResult = getTotal(getDataFromFile('testInput.txt'));
 console.log("Expected result: 37, Actual: " + testResult);
 
 let challengeResult = getTotal(getDataFromFile('input.txt'));
-console.log(challengeResult);
+console.log("Challenge result: " + challengeResult);
