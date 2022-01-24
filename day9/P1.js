@@ -11,29 +11,32 @@ const getDataFromFile = (filename) => {
     .split("\r\n");
     return allData;
 }
+
+const getAdjacentCoords = (maxX, maxY, x, y) => {
+    let adjacentCoords = [];
+    if (x > 0 ) {
+        adjacentCoords.push([x-1, y]);
+    }
+    if (y > 0) {
+        adjacentCoords.push([x, y-1]);
+    }
+    if (x < maxX) {
+        adjacentCoords.push([x+1, y])
+    }
+    if (y < maxY) {
+        adjacentCoords.push([x, y+1])
+    }
+    return adjacentCoords;
+
+}
     
 const isLessThanAdjacents = (data, x, y) => {
-    let adjacents = [];
-    try {
-        adjacents.push(parseInt(data[x-1][y]));
-    } catch {
-        console.log("edge found for x direction");
+    let adjacentVals = [];
+    let adjacentCoords = getAdjacentCoords(data.length-1, data[0].length-1, x, y);
+    for (coord of adjacentCoords) {
+        adjacentVals.push(parseInt(data[coord[0]][coord[1]]));
     }
-    try {
-        adjacents.push(parseInt(data[x+1][y]));
-    } catch {
-        console.log("edge found for x direction");
-    }
-    // y direction is a string so indexing out of bounds wont throw an error
-    let y_right = parseInt(data[x][y+1]);
-    let y_left = parseInt(data[x][y-1]);
-    if (!isNaN(y_left)) {
-        adjacents.push(y_left);
-    }
-    if (!isNaN(y_right)) {
-        adjacents.push(y_right);
-    }
-    return parseInt(data[x][y]) < Math.min(...adjacents);
+    return parseInt(data[x][y]) < Math.min(...adjacentVals);
 
 }
 
